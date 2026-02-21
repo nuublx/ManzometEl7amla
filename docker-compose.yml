@@ -1,0 +1,16 @@
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: 7amla-sql
+    pull_policy: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Manzoma123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  sql_data:
