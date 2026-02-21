@@ -1,11 +1,11 @@
-export type AuthMode = 'login' | 'signup' | 'forgot'
+export type AuthMode = 'login' | 'signup' //| 'forgot'
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000'
+const API_BASE = import.meta.env.VITE_API_BASE_URL
 
 const ENDPOINTS: Record<AuthMode, string[]> = {
   login: ['/api/Auth/login'],
-  signup: ['/api/Auth/signup', '/api/Auth/register'],
-  forgot: ['/api/Auth/forget-password', '/api/Auth/forgot-password'],
+  signup: ['/api/Auth/register'],
+ // forgot: ['/api/Auth/forget-password', '/api/Auth/forgot-password'],
 }
 
 type AuthPayload = {
@@ -64,7 +64,7 @@ const callWithFallback = async (mode: AuthMode, payload: AuthPayload): Promise<A
 export const authService = {
   login: (payload: AuthPayload) => callWithFallback('login', payload),
   signup: (payload: AuthPayload) => callWithFallback('signup', payload),
-  forgotPassword: (payload: AuthPayload) => callWithFallback('forgot', payload),
+  //forgotPassword: (payload: AuthPayload) => callWithFallback('forgot', payload),
   endpoints: ENDPOINTS,
   apiBase: API_BASE,
 }

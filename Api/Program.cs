@@ -1,10 +1,7 @@
 using DotNetEnv;
-using System.Text;
 using Api.Infrastructure;
 using DataContext.Context;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 Env.TraversePath().Load();
 
@@ -18,6 +15,18 @@ services
     .AddServices()
     .AddSwaggerGen()
     .AddControllers();
+services.AddCors(options =>
+ {
+     options.AddPolicy("AllowVite",
+         policy =>
+         {
+             policy
+                 .WithOrigins("http://localhost:5173")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .AllowCredentials();
+         });
+ });
 
 var app = builder.Build();
 
@@ -35,6 +44,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowVite");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

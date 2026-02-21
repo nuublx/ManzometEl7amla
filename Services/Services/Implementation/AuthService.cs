@@ -1,12 +1,15 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
 using DataContext.Context;
 using DataContext.Entities;
+
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+
 using Services.DTO;
 using Services.Helpers;
 using Services.Services.Interface;
@@ -39,23 +42,10 @@ namespace Services.Services.Implementation
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto, CancellationToken token)
         {
-            var users = await context.Users
-                .Where(x => x.Name == loginDto.Name)
-                .OrderBy(x => x.Id)
-                .Take(2)
-                .ToListAsync(token);
+            var user = await context.Users
+                .Where(x => x.Id == loginDto.Id)
+                .FirstOrDefaultAsync(token) ?? throw new UnauthorizedAccessException("Invalid credentials.");
 
-            if (users.Count == 0)
-            {
-                throw new UnauthorizedAccessException("Invalid credentials.");
-            }
-
-            if (users.Count > 1)
-            {
-                throw new InvalidOperationException("Duplicate user records detected for this account name.");
-            }
-
-            var user = users[0];
             var isValid = Hashing.VerifyPassword(loginDto.Password, user.PasswordHash);
             if (!isValid)
             {
@@ -85,8 +75,8 @@ namespace Services.Services.Implementation
                 ?? throw new InvalidOperationException("JWT audience is not configured.");
             var expirationMinutes = int.TryParse(configuration["Jwt:ExpirationMinutes"], out var minutes)
                 ? minutes
-                : 60;
-
+                : 1500;
+            
             var claims =
                 new[]
                 {

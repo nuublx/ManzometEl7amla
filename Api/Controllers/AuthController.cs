@@ -39,5 +39,12 @@ namespace Api.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+
+        //[HttpPost("forget-password")]
+        //public async Task<ActionResult> ForgetPassword(string Name, CancellationToken token)
+        //{
+        //    // Implement password reset logic here
+        //    return Ok(new { message = "Password reset link has been sent to your email." });
+        //}
     }
 }
