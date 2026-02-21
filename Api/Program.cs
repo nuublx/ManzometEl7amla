@@ -1,9 +1,12 @@
+using DotNetEnv;
 using System.Text;
 using Api.Infrastructure;
 using DataContext.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
+Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
