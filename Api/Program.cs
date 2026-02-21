@@ -19,7 +19,17 @@ services
     .AddSwaggerGen()
     .AddControllers();
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key is missing.");
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("JWT key is missing. Configure Jwt:Key via environment variables or a secret store.");
+}
+
+if (jwtKey.Length < 32)
+{
+    throw new InvalidOperationException("JWT key is too short. Configure a secret key with at least 32 characters.");
+}
+
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("JWT issuer is missing.");
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("JWT audience is missing.");
 
