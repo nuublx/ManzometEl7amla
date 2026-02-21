@@ -17,7 +17,7 @@
                 PasswordHash = Hashing.HashPassword(createUserDto.Password)
             };
             _context.Users.Add(user);
-            user.Id = await _context.SaveChangesAsync(token);
+            await _context.SaveChangesAsync(token);
             return new UserDto
             {
                 Id = user.Id,
