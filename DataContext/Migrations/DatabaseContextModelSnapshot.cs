@@ -43,6 +43,9 @@ namespace DataContext.Migrations
 
                     b.HasIndex("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 #pragma warning restore 612, 618

@@ -34,6 +34,10 @@ namespace Api.Controllers
             {
                 return Unauthorized(new { message = ex.Message });
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
     }
 }

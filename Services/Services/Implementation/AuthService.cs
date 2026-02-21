@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using DataContext.Context;
 using DataContext.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +17,6 @@ namespace Services.Services.Implementation
     {
         public async Task<AuthResponseDto> RegisterAsync(CreateUserDto createUserDto, CancellationToken token)
         {
-            var exists = await context.Users.AnyAsync(x => x.Name == createUserDto.Name, token);
-            if (exists)
-            {
-                throw new InvalidOperationException("A user with this name already exists.");
-            }
-
             var user = new User
             {
                 Name = createUserDto.Name,
@@ -29,16 +24,38 @@ namespace Services.Services.Implementation
             };
 
             context.Users.Add(user);
-            await context.SaveChangesAsync(token);
+
+            try
+            {
+                await context.SaveChangesAsync(token);
+            }
+            catch (DbUpdateException ex) when (IsUniqueNameConstraintViolation(ex))
+            {
+                throw new InvalidOperationException("A user with this name already exists.");
+            }
 
             return BuildAuthResponse(user);
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto, CancellationToken token)
         {
-            var user = await context.Users.FirstOrDefaultAsync(x => x.Name == loginDto.Name, token)
-                ?? throw new UnauthorizedAccessException("Invalid credentials.");
+            var users = await context.Users
+                .Where(x => x.Name == loginDto.Name)
+                .OrderBy(x => x.Id)
+                .Take(2)
+                .ToListAsync(token);
 
+            if (users.Count == 0)
+            {
+                throw new UnauthorizedAccessException("Invalid credentials.");
+            }
+
+            if (users.Count > 1)
+            {
+                throw new InvalidOperationException("Duplicate user records detected for this account name.");
+            }
+
+            var user = users[0];
             var isValid = Hashing.VerifyPassword(loginDto.Password, user.PasswordHash);
             if (!isValid)
             {
@@ -46,6 +63,16 @@ namespace Services.Services.Implementation
             }
 
             return BuildAuthResponse(user);
+        }
+
+        private static bool IsUniqueNameConstraintViolation(DbUpdateException exception)
+        {
+            if (exception.InnerException is not SqlException sqlException)
+            {
+                return false;
+            }
+
+            return sqlException.Number is 2601 or 2627;
         }
 
         private AuthResponseDto BuildAuthResponse(User user)
@@ -60,11 +87,12 @@ namespace Services.Services.Implementation
                 ? minutes
                 : 60;
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name)
-            };
+            var claims =
+                new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name)
+                };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

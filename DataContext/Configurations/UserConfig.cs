@@ -17,8 +17,10 @@
             builder.Property(x => x.PasswordHash)
                    .IsRequired()
                    .HasMaxLength(256);
-            
+
             builder.HasIndex(x => x.Id);
+            builder.HasIndex(x => x.Name)
+                   .IsUnique();
         }
     }
 }
