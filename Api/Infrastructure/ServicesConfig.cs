@@ -1,4 +1,3 @@
-﻿
 using Services.Services.Implementation;
 using Services.Services.Interface;
 
@@ -10,6 +9,7 @@ namespace Api.Infrastructure
             this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
     }
