@@ -1,70 +1,31 @@
-export type AuthMode = 'login' | 'signup' //| 'forgot'
-
+export type AuthMode = 'login'
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 
-const ENDPOINTS: Record<AuthMode, string[]> = {
-  login: ['/api/Auth/login'],
-  signup: ['/api/Auth/register'],
- // forgot: ['/api/Auth/forget-password', '/api/Auth/forgot-password'],
-}
-
 type AuthPayload = {
-  name: string
+  id: number
   password: string
 }
 
-type ApiResponse = {
+type ApiResponse<T> = {
   ok: boolean
   message: string
+  data?: T
 }
 
-const parseError = (data: unknown, response: Response) => {
-  if (typeof data === 'object' && data && 'message' in data) {
-    return String(data.message)
+const login = async (payload: AuthPayload): Promise<ApiResponse<{user: {id: number, name: string}, token: string}>> => {
+  const result = await fetch(`${API_BASE}/api/Auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!result.ok) {
+    const errorData = await result.json()
+    throw new Error(errorData.message || 'Login failed')
   }
-
-  return `${response.status} ${response.statusText}`
+  
+  return await result.json()
 }
-
-const callWithFallback = async (mode: AuthMode, payload: AuthPayload): Promise<ApiResponse> => {
-  let response: Response | null = null
-
-  for (const endpoint of ENDPOINTS[mode]) {
-    response = await fetch(`${API_BASE}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-
-    if (response.status !== 404) break
-  }
-
-  if (!response) {
-    return { ok: false, message: 'Could not reach the authentication API.' }
-  }
-
-  const contentType = response.headers.get('content-type') ?? ''
-  const data = contentType.includes('application/json') ? await response.json() : await response.text()
-
-  if (!response.ok) {
-    return { ok: false, message: parseError(data, response) }
-  }
-
-  return {
-    ok: true,
-    message:
-      mode === 'login'
-        ? 'Login successful.'
-        : mode === 'signup'
-          ? 'Account created successfully.'
-          : 'Password reset request sent.',
-  }
-}
-
 export const authService = {
-  login: (payload: AuthPayload) => callWithFallback('login', payload),
-  signup: (payload: AuthPayload) => callWithFallback('signup', payload),
-  //forgotPassword: (payload: AuthPayload) => callWithFallback('forgot', payload),
-  endpoints: ENDPOINTS,
+  login: (payload: AuthPayload) => login(payload),
   apiBase: API_BASE,
 }
