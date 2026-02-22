@@ -1,0 +1,35 @@
+.system-codes-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+  background: #eafcff;
+  color: #0a2b3f;
+}
+
+.system-codes-sidebar {
+  background: #ffffff;
+  border-left: 1px solid #bdd9e5;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.system-codes-sidebar h1 {
+  margin: 0 0 8px;
+  color: #18425a;
+  font-size: 1.3rem;
+}
+
+.system-codes-sidebar button {
+  border: 1px solid #95c8dc;
+  background: white;
+  border-radius: 4px;
+  padding: 8px;
+  text-align: right;
+}
+
+.system-codes-sidebar button.active {
+  background: #d5f4ff;
+  font-weight: 700;
+}

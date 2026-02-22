@@ -1,0 +1,53 @@
+.master-data-page {
+  padding: 24px;
+}
+
+.master-data-page h2 {
+  color: #174f70;
+}
+
+.master-data-toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.master-data-toolbar button {
+  border: 1px solid #6aa9c1;
+  background: #fefefe;
+  padding: 6px 12px;
+}
+
+.master-data-fieldset {
+  border: 1px solid #9fd0e0;
+  padding: 12px;
+  margin: 0;
+  max-width: 600px;
+}
+
+.master-data-label {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.master-data-input {
+  border: 1px solid #a5d5e8;
+  min-height: 32px;
+  padding: 4px 8px;
+}
+
+.master-data-error {
+  color: #b00020;
+  cursor: pointer;
+}
+
+.master-data-list {
+  margin-top: 12px;
+  max-width: 600px;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid #c7dbe4;
+  background: #fff;
+}

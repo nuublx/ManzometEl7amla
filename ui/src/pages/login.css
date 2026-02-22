@@ -1,0 +1,9 @@
+.login-page {
+  width: 100%;
+}
+
+.login-page .login-card {
+  background: #111;
+  border: 1px solid #495057;
+  border-radius: 8px;
+}
