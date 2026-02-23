@@ -1,3 +1,3 @@
-import { createLocalStorageCrudService } from './masterData/localStorageCrud'
+import { createCampaignThingsApiService } from './masterData/apiCrud'
 
-export const purposesService = createLocalStorageCrudService('purposes')
+export const purposesService = createCampaignThingsApiService('/api/CampaignThings')

@@ -8,6 +8,7 @@ export const PurposesPage = () => (
     entityTitle="أغراض الحملة"
     codeLabel="كود الغرض"
     nameLabel="الغرض"
+    secondaryLabel="كود نوع الحملة"
     selector={(state: RootState) => state.purposes}
     actions={purposesActions}
   />

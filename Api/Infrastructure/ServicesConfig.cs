@@ -10,6 +10,7 @@ namespace Api.Infrastructure
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IReferenceDataService, ReferenceDataService>();
             return services;
         }
     }
