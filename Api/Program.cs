@@ -13,20 +13,9 @@ var services = builder.Services;
 services
     .AddDataContext(builder.Configuration)
     .AddServices()
+    .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerGen()
     .AddControllers();
-services.AddCors(options =>
- {
-     options.AddPolicy("AllowVite",
-         policy =>
-         {
-             policy
-                 .WithOrigins("http://localhost:5173")
-                 .AllowAnyHeader()
-                 .AllowAnyMethod()
-                 .AllowCredentials();
-         });
- });
 
 var app = builder.Build();
 

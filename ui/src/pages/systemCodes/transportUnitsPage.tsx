@@ -8,7 +8,6 @@ export const TransportUnitsPage = () => (
     entityTitle="وحدات إدارة النقل"
     codeLabel="كود الوحدة"
     nameLabel="الوحدة"
-    secondaryLabel="الجهة"
     selector={(state: RootState) => state.transportUnits}
     actions={transportUnitsActions}
   />

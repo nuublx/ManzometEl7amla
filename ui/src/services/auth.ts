@@ -1,31 +1,34 @@
+import { apiClient } from "./apiClient"
+
 export type AuthMode = 'login'
-const API_BASE = import.meta.env.VITE_API_BASE_URL
 
 type AuthPayload = {
   id: number
   password: string
 }
 
-type ApiResponse<T> = {
-  ok: boolean
-  message: string
-  data?: T
-}
 
-const login = async (payload: AuthPayload): Promise<ApiResponse<{user: {id: number, name: string}, token: string}>> => {
-  const result = await fetch(`${API_BASE}/api/Auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
+const login = async (payload: AuthPayload): Promise<{user: {id: number, name: string}}> => {
+  const result = await apiClient<AuthPayload>(`/api/Auth/login`,payload,{ method: 'POST' });
+  
   if (!result.ok) {
-    const errorData = await result.json()
-    throw new Error(errorData.message || 'Login failed')
+    const errorData = await result.json();
+    throw new Error(errorData.message || 'Login failed');
   }
   
   return await result.json()
 }
+
+export async function checkAuth(): Promise<{user: {id: number, name: string}} | undefined> {
+  const result = await apiClient('/Auth/check-auth')
+  if (result.ok) {
+    return await result.json()
+  }
+  return undefined;
+}
+
 export const authService = {
   login: (payload: AuthPayload) => login(payload),
-  apiBase: API_BASE,
+  checkAuth: () => checkAuth(),
+  
 }

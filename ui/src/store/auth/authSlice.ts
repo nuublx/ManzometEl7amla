@@ -4,7 +4,6 @@ import { authService } from '../../services'
 type AuthState = {
   id?: number
   name?: string
-  token?: string
   isAuthenticated: boolean
   loading: boolean
   error?: string
@@ -13,7 +12,6 @@ type AuthState = {
 const initialState: AuthState = {
   id: undefined,
   name: undefined,
-  token: undefined,
   isAuthenticated: false,
   loading: false,
 }
@@ -22,20 +20,30 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { id: number; password: string }, thunkApi) => {
     const response = await authService.login(credentials)
-    const data = response.data
-
-    if (!response.ok || data === undefined) {
-      throw new Error(response.message || 'Login failed')
-    }
 
     thunkApi.dispatch(
       loginSuccess({
-        user: data.user,
-        token: data.token,
+        user: response.user,
       }),
     )
   },
 )
+export const initialLoad = createAsyncThunk(
+  'auth/initialLoad',
+  async (_, thunkApi) => {
+    const result = await authService.checkAuth()
+    if (result) {
+      const user = result.user;
+      thunkApi.dispatch(
+        loginSuccess({
+          user: { id: user.id, name: user.name }, 
+        }),
+      )
+    }
+    else {
+      thunkApi.dispatch(logout())
+    }
+  })
 
 const authSlice = createSlice({
   name: 'auth',
@@ -43,18 +51,16 @@ const authSlice = createSlice({
   reducers: {
     loginSuccess: (
       state,
-      action: PayloadAction<{ user: { id: number; name: string }; token: string }>,
+      action: PayloadAction<{ user: { id: number; name: string } }>,
     ) => {
       state.id = action.payload.user.id
       state.name = action.payload.user.name
-      state.token = action.payload.token
       state.isAuthenticated = true
       state.error = undefined
     },
     logout: (state) => {
       state.id = undefined
       state.name = undefined
-      state.token = undefined
       state.isAuthenticated = false
     },
   },

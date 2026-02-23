@@ -10,7 +10,7 @@ export const LoginPage = () => {
   const loading = useAppSelector((state) => state.auth.loading)
   const error = useAppSelector((state) => state.auth.error)
 
-  const submit = async (event: React.FormEvent) => {
+  const submit = async (event: React.SubmitEvent) => {
     event.preventDefault()
     if (!id.trim() || !password.trim()) {
       return

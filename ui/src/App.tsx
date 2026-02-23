@@ -1,8 +1,14 @@
 import { LoginPage } from './pages/login'
-import { useAppSelector } from './store/hooks'
+import { useAppDispatch, useAppSelector } from './store/hooks'
 import { SystemCodesPage } from './pages/systemCodes'
+import { useEffect } from 'react';
+import { initialLoad } from './store/auth/authSlice';
 
 function App() {
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(initialLoad());
+  },[])
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
 
   if (!isAuthenticated) {
