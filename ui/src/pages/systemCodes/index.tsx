@@ -8,6 +8,7 @@ import { BeneficiariesPage } from './beneficiariesPage'
 import { TransportUnitsPage } from './transportUnitsPage'
 import { PurposesPage } from './purposesPage'
 import { MissionsPage } from './missionsPage'
+import { useNavigate } from 'react-router-dom'
 
 type Screen = {
   id: string
@@ -27,6 +28,7 @@ const screens: Screen[] = [
 ]
 
 export const SystemCodesPage = () => {
+  const navigate = useNavigate();
   const [activeScreenId, setActiveScreenId] = useState(screens[0].id)
   const activeScreen = screens.find((screen) => screen.id === activeScreenId) ?? screens[0]
 
@@ -43,6 +45,13 @@ export const SystemCodesPage = () => {
             {screen.label}
           </button>
         ))}
+        <button
+          key={'home-page'}
+          className={activeScreen.id === 'home-page' ? 'active' : ''}
+          onClick={() => navigate('/Home')}
+        >
+          الصفحة الرئيسية 
+        </button>
       </aside>
       <div>{activeScreen.component}</div>
     </main>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
 using Services.Services.Interface;
+using System.Security.Claims;
 
 namespace Api.Controllers
 {
@@ -64,16 +65,10 @@ namespace Api.Controllers
         {
             var user = new UserDto
             {
-                Id = int.Parse(User.FindFirst("id")?.Value ?? "0"),
+                Id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "-1"),
                 Name = User.Identity?.Name ?? string.Empty
             };
             return Ok(user);
         }
-        //[HttpPost("forget-password")]
-        //public async Task<ActionResult> ForgetPassword(string Name, CancellationToken token)
-        //{
-        //    // Implement password reset logic here
-        //    return Ok(new { message = "Password reset link has been sent to your email." });
-        //}
     }
 }

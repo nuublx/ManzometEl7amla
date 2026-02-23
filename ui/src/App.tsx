@@ -42,12 +42,12 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginRoute isAuthenticated={isAuthenticated} />} />
-      <Route path="/" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<HomePage />} />} />
+      <Route path="/Home" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<HomePage />} />} />
       <Route
         path="/system-codes"
         element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<SystemCodesPage />} />}
       />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/Home" replace />} />
     </Routes>
   )
 }

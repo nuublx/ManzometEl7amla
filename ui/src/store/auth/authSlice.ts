@@ -31,9 +31,8 @@ export const login = createAsyncThunk(
 export const initialLoad = createAsyncThunk(
   'auth/initialLoad',
   async (_, thunkApi) => {
-    const result = await authService.checkAuth()
-    if (result) {
-      const user = result.user;
+    const user = await authService.checkAuth()
+    if (user) {
       thunkApi.dispatch(
         loginSuccess({
           user: { id: user.id, name: user.name }, 

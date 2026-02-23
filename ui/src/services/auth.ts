@@ -19,8 +19,8 @@ const login = async (payload: AuthPayload): Promise<{user: {id: number, name: st
   return await result.json()
 }
 
-export async function checkAuth(): Promise<{user: {id: number, name: string}} | undefined> {
-  const result = await apiClient('/Auth/check-auth')
+export async function checkAuth(): Promise<{id: number, name: string} | undefined> {
+  const result = await apiClient('/api/Auth/check-auth')
   if (result.ok) {
     return await result.json()
   }
