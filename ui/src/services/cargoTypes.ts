@@ -1,3 +1,3 @@
-import { createLocalStorageCrudService } from './masterData/localStorageCrud'
+import { createNamedEntityApiService } from './masterData/apiCrud'
 
-export const cargoTypesService = createLocalStorageCrudService('cargo-types')
+export const cargoTypesService = createNamedEntityApiService('/api/CargoTypes')

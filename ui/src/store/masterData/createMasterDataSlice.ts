@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { MasterDataItem } from '../../services/masterData/localStorageCrud'
+import type { MasterDataItem } from '../../services/masterData/apiCrud'
 
 type CrudService = {
   list: () => Promise<MasterDataItem[]>
